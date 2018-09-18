@@ -66,10 +66,11 @@ def prob4_form():
     formstring = """<br><br>
     <form action="" method='GET'>
     Enter a tv show: <input type="text" name="tv_name">  <br>
+    Select <b> one < of the options below: <br>
     <input type="checkbox" name="rating" value="TV-Y"> I think this TV Show should be rated TV-Y <br>
     <input type="checkbox" name="rating" value="TV-Y7"> I think this TV Show should be rated TV-Y7 <br>
-    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated G <br>
-    <input type="checkbox" name="rating" value="PG"> I think this TV Show should be rated PG <br>
+    <input type="checkbox" name="rating" value="TV-G"> I think this TV Show should be rated G <br>
+    <input type="checkbox" name="rating" value="TV-PG"> I think this TV Show should be rated PG <br>
     <input type="checkbox" name="rating" value="TV-14"> I think this TV Show should be rated TV-14 <br>
     <input type="checkbox" name="rating" value="TV-MA"> I think this TV Show should be rated TV-MA <br>
     <input type="submit" value="Submit">
@@ -92,12 +93,10 @@ def prob4_form():
             most_common_rating.append(rating)
         user_rating = str(request.args.get('rating', ''))
         most_common_rating = str(most_common_rating).replace('[','').replace(']','').strip("''")
-        print(most_common_rating)
-        print(user_rating)
         if most_common_rating != user_rating:
-            return formstring  + "Your rating, " +  str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'"+ ", is different from the most common rating, which is " + str(most_common_rating) + "."
+            return formstring  + "Your rating, " +  str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'"+ ", is <b> different </b> from the most common rating, which is " + str(most_common_rating) + "."
         else:
-            return formstring  + "Your rating, " + str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'" + ", is the same as the most common rating, which is " + str(most_common_rating) + "."
+            return formstring  + "Your rating, " + str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'" + ", is the <b> same </b> as the most common rating, which is " + str(most_common_rating) + "."
     return formstring
 if __name__ == '__main__':
     app.run()
