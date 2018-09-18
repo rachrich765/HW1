@@ -10,7 +10,7 @@
 # https://www.w3schools.com/tags/att_input_type.asp
 # http://www.seanbehan.com/how-to-get-a-dict-from-flask-request-form/
 # https://stackoverflow.com/questions/23375606/converting-list-items-from-string-to-intpython/23375633
-
+# I worked alone
 
 ## [PROBLEM 1] - 150 points
 ## Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
@@ -20,6 +20,7 @@ import requests
 import json
 import sys
 from collections import Counter
+import string
 
 app = Flask(__name__)
 app.debug = True
@@ -65,12 +66,12 @@ def prob4_form():
     formstring = """<br><br>
     <form action="" method='GET'>
     Enter a tv show: <input type="text" name="tv_name">  <br>
-    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated Y <br>
-    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated Y7 <br>
+    <input type="checkbox" name="rating" value="TV-Y"> I think this TV Show should be rated TV-Y <br>
+    <input type="checkbox" name="rating" value="TV-Y7"> I think this TV Show should be rated TV-Y7 <br>
     <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated G <br>
     <input type="checkbox" name="rating" value="PG"> I think this TV Show should be rated PG <br>
-    <input type="checkbox" name="rating" value="TV 14"> I think this TV Show should be rated TV 14 <br>
-    <input type="checkbox" name="rating" value="TV MA"> I think this TV Show should be rated TV MA <br>
+    <input type="checkbox" name="rating" value="TV-14"> I think this TV Show should be rated TV-14 <br>
+    <input type="checkbox" name="rating" value="TV-MA"> I think this TV Show should be rated TV-MA <br>
     <input type="submit" value="Submit">
     </form>"""
     if request.method == "GET":
@@ -89,12 +90,14 @@ def prob4_form():
         most_common_rating = []
         for rating, count in ratings_counted.most_common(1):
             most_common_rating.append(rating)
-        user_rating = request.args.get('rating', '')
-        most_common_rating = str(most_common_rating).replace('[','').replace(']','')
+        user_rating = str(request.args.get('rating', ''))
+        most_common_rating = str(most_common_rating).replace('[','').replace(']','').strip("''")
+        print(most_common_rating)
+        print(user_rating)
         if most_common_rating != user_rating:
-            return formstring  + "Your rating, " +  "'" + str(user_rating) + "'"+ "," + " for the TV show, " + "'" + str(tv_name)  + "'"+ ", is different from the most common rating, which is " + str(most_common_rating) + "."
+            return formstring  + "Your rating, " +  str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'"+ ", is different from the most common rating, which is " + str(most_common_rating) + "."
         else:
-            return formstring  + "Your rating, " + "'" + str(user_rating) + "'" + "","" + " for the TV show, " + "'" + str(tv_name) + "'" + ", is the same as the most common rating, which is " + str(most_common_rating) + ".;"
+            return formstring  + "Your rating, " + str(user_rating) +  "," + " for the TV show, " + "'" + string.capwords(str(tv_name))  + "'" + ", is the same as the most common rating, which is " + str(most_common_rating) + "."
     return formstring
 if __name__ == '__main__':
     app.run()
