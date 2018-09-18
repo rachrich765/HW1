@@ -5,21 +5,97 @@
 #################################
 
 ## List below here, in a comment/comments, the people you worked with on this assignment AND any resources you used to find code (50 point deduction for not doing so). If none, write "None".
-
+# https://www.reddit.com/r/flask/comments/4krfu0/afconvert_immutablemultidict_to_properly/
+# https://www.tutorialspoint.com/python/dictionary_get.htm
+# https://www.w3schools.com/tags/att_input_type.asp
+# http://www.seanbehan.com/how-to-get-a-dict-from-flask-request-form/
+# https://stackoverflow.com/questions/23375606/converting-list-items-from-string-to-intpython/23375633
 
 
 ## [PROBLEM 1] - 150 points
 ## Below is code for one of the simplest possible Flask applications. Edit the code so that once you run this application locally and go to the URL 'http://localhost:5000/class', you see a page that says "Welcome to SI 364!"
 
-from flask import Flask
+from flask import Flask, request
+import requests
+import json
+import sys
+from collections import Counter
+
 app = Flask(__name__)
 app.debug = True
 
-@app.route('/')
+@app.route('/class')
 def hello_to_you():
-    return 'Hello!'
+    return 'Welcome to SI 364!'
 
+@app.route('/movie/<movie_name>')
+def get_itunes_data(movie_name):
+    base_url = "https://itunes.apple.com/search"
+    params_diction = {}
+    params_diction["term"] = movie_name
+    params_diction["media"] = "movie"
+    resp = requests.get(base_url,params=params_diction)
+    text = resp.text
+    python_obj = json.loads(text)
+    return str(python_obj)
 
+@app.route('/question')
+def question():
+    return """ <form action="http://localhost:5000/result" method='POST'>
+     Enter your favorite number:  <input type="number" name="number_to_be_doubled" value="number">
+    <input type="submit" value="Submit">
+    </form>"""
+
+@app.route('/result',methods=["POST"])
+def result_form1():
+    if request.method == "POST":
+        results = request.form.to_dict(request.args)
+        num_double_1 = results.get('number_to_be_doubled')
+        for i in range(len(num_double_1)):
+            num_double_1[i] = int(num_double_1[i])
+        number_to_be_doubled = (num_double_1[0])**2
+        return "Double your favorite number is " + str(number_to_be_doubled)
+
+@app.route('/')
+def main_page():
+    return "Here's the main page. <a href='http://localhost:5000/problem4form'>Click here to see the form</a>."
+
+@app.route('/problem4form',methods=["GET"])
+def prob4_form():
+    formstring = """<br><br>
+    <form action="" method='GET'>
+    Enter a tv show: <input type="text" name="tv_name">  <br>
+    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated Y <br>
+    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated Y7 <br>
+    <input type="checkbox" name="rating" value="G"> I think this TV Show should be rated G <br>
+    <input type="checkbox" name="rating" value="PG"> I think this TV Show should be rated PG <br>
+    <input type="checkbox" name="rating" value="TV 14"> I think this TV Show should be rated TV 14 <br>
+    <input type="checkbox" name="rating" value="TV MA"> I think this TV Show should be rated TV MA <br>
+    <input type="submit" value="Submit">
+    </form>"""
+    if request.method == "GET":
+        tv_name = request.args.get('tv_name', "")
+        base_url = "https://itunes.apple.com/search"
+        params_diction = {}
+        params_diction["term"] = tv_name
+        params_diction["media"] = "tvShow"
+        ratings = []
+        resp = requests.get(base_url,params=params_diction)
+        text = resp.text
+        python_obj = json.loads(text)
+        for item in python_obj["results"]:
+            ratings.append(item['contentAdvisoryRating'])
+        ratings_counted = Counter(ratings)
+        most_common_rating = []
+        for rating, count in ratings_counted.most_common(1):
+            most_common_rating.append(rating)
+        user_rating = request.args.get('rating', '')
+        most_common_rating = str(most_common_rating).replace('[','').replace(']','')
+        if most_common_rating != user_rating:
+            return formstring  + "Your rating, " +  "'" + str(user_rating) + "'"+ "," + " for the TV show, " + "'" + str(tv_name)  + "'"+ ", is different from the most common rating, which is " + str(most_common_rating) + "."
+        else:
+            return formstring  + "Your rating, " + "'" + str(user_rating) + "'" + "","" + " for the TV show, " + "'" + str(tv_name) + "'" + ", is the same as the most common rating, which is " + str(most_common_rating) + ".;"
+    return formstring
 if __name__ == '__main__':
     app.run()
 
