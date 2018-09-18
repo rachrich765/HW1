@@ -25,15 +25,19 @@ import string
 app = Flask(__name__)
 app.debug = True
 
-@app.route('/class')
+@app.route('/')
 def hello_to_you():
-    return 'Welcome to SI 364!'
+    return 'Hello!'
 
-@app.route('/movie/<movie_name>')
-def get_itunes_data(movie_name):
+@app.route('/class')
+def welcome_to_364():
+    return "Welcome to SI 364!"
+
+@app.route('/movie/<anytitlesearch>')
+def get_itunes_data(anytitlesearch):
     base_url = "https://itunes.apple.com/search"
     params_diction = {}
-    params_diction["term"] = movie_name
+    params_diction["term"] = anytitlesearch
     params_diction["media"] = "movie"
     resp = requests.get(base_url,params=params_diction)
     text = resp.text
@@ -57,9 +61,6 @@ def result_form1():
         number_to_be_doubled = (num_double_1[0])*2
         return "Double your favorite number is " + str(number_to_be_doubled)
 
-@app.route('/')
-def main_page():
-    return "Here's the main page. <a href='http://localhost:5000/problem4form'>Click here to see the form</a>."
 
 @app.route('/problem4form',methods=["GET"])
 def prob4_form():
