@@ -54,7 +54,7 @@ def result_form1():
         num_double_1 = results.get('number_to_be_doubled')
         for i in range(len(num_double_1)):
             num_double_1[i] = int(num_double_1[i])
-        number_to_be_doubled = (num_double_1[0])**2
+        number_to_be_doubled = (num_double_1[0])*2
         return "Double your favorite number is " + str(number_to_be_doubled)
 
 @app.route('/')
