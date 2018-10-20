@@ -234,10 +234,11 @@ def long_non_whitespace():
         if sum(c != ' ' for c in x) > longest_len:
             longest_tweet = x
         if sum(c != ' ' for c in x) == longest_len:
-            if (x.toLowerCase().charAt(0) < longest_tweet.toLowerCase().charAt(0)):
-                longest_tweet = x
-            else:
-                longest_tweet = longest_tweet
+            for y in len(x):
+                if (x.toLowerCase().charAt(y) < longest_tweet.toLowerCase().charAt(y)):
+                    longest_tweet = x
+                else:
+                    longest_tweet = longest_tweet
     longest_tweet_info = db.session.query(Tweet).filter_by(text=longest_tweet)
     for l in longest_tweet_info:
         user_longest_tweet = User.query.filter_by(id=l.user_id).first()
