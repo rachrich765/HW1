@@ -1,0 +1,8 @@
+{% block content %}
+<ul>
+{% for tw in longest_user_info %}
+    The tweet text with the most non-whitespace characters is:<strong>{{ tw[0] }}<br></strong>and was posted by username:<strong> @{{ tw[1] }}</strong> and display name: <strong>{{ tw[2] }}</strong><br><br>
+{% endfor %}
+</ul>
+
+{% endblock %}
