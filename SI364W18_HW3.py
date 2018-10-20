@@ -160,7 +160,7 @@ def index():
                 db.session.add(tweet12)
                 db.session.commit()
                 flash("Tweet was successfully added to the database")
-                return render_template('index.html',form=form, num_tweets=num_tweets)
+                return render_template('index.html',form=form, num_tweets=num_tweets+1)
             else:
                 flash("This tweet already exists in the database")
                 return see_all_tweets()
@@ -170,7 +170,7 @@ def index():
                 db.session.add(tweet12)
                 db.session.commit()
                 flash("Tweet was successfully added to the database")
-                return render_template('index.html',form=form, num_tweets=num_tweets)
+                return render_template('index.html',form=form, num_tweets=num_tweets+1)
             else:
                 flash("This tweet already exists in the database")
                 return see_all_tweets()
